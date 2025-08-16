@@ -225,7 +225,7 @@ const VideoConferencePage = () => {
     setIsConnected(false);
     setOthersideId(null);
     // Navigate to home page
-    navigate('/');
+    navigate('/',{replace:true});
   };
 
   return (
