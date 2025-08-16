@@ -223,7 +223,7 @@ const VideoConferencePage = () => {
     }
 
     setIsConnected(false);
-
+    setOthersideId(null);
     // Navigate to home page
     navigate('/');
   };
@@ -275,6 +275,7 @@ const VideoConferencePage = () => {
           </div>
 
           {/* Remote Video */}
+          
           <div className="bg-black rounded-lg overflow-hidden relative">
             <video
               ref={remotevideo}
@@ -292,7 +293,10 @@ const VideoConferencePage = () => {
           </div>
 
         </div>
-
+        
+        <div>
+            {othersideId==null?"Connecting to Others":"Guest Connected"}
+        </div>
         {/* Controls */}
         <div className="p-4 border-t flex justify-center gap-4">
 
