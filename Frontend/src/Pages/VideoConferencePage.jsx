@@ -135,6 +135,7 @@ const VideoConferencePage = () => {
 
       // Final answer from other side
       if (data.type === "other-side-answer") {
+        setTimeout(sendQueuedCandidates, 1);
         await newPeer.setRemoteDescription(data.sdp);
       }
 
