@@ -43,10 +43,17 @@ const VideoConferencePage = () => {
   const connectUser = async () => {
     if (!socket || socket.readyState === WebSocket.CLOSED) return;
 
-    // Notify server a new user joined
-    socket.send(JSON.stringify({ type: "new-user" }));
+    
+    const newPeer = new RTCPeerConnection({
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+    });
 
-    const newPeer = new RTCPeerConnection();
+    // Notify server a new user joined
+    setTimeout(() => {
+        // Notify server a new user joined
+        socket.send(JSON.stringify({ type: "new-user" }));
+
+    }, 1000);
 
     // Trigger SDP offer when negotiation is needed
     newPeer.onnegotiationneeded = async () => {
@@ -64,6 +71,8 @@ const VideoConferencePage = () => {
 
       if (othersideId != null) {
         // Peer is ready → send immediately
+        console.log("Peer is Ready");
+        
         socket.send(JSON.stringify({
           type: "ice-connection",
           iceconnections: event.candidate,
@@ -71,6 +80,8 @@ const VideoConferencePage = () => {
         }));
       } else {
         // Peer not ready → queue it
+        console.log("Peer Not Ready");
+        
         iceCandidateQueue.push(event.candidate);
       }
     };
@@ -79,7 +90,7 @@ const VideoConferencePage = () => {
     const sendQueuedCandidates = () => {
       iceCandidateQueue.forEach(candidate => {
         socket.send(JSON.stringify({
-          type: "ice-connection",
+          type: "onice-connection",
           iceconnections: candidate,
           otherside: othersideId,
         }));
