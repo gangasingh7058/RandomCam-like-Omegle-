@@ -291,6 +291,7 @@ const VideoConferencePage = () => {
                 setconnectiondone(true);
                 connectUser();
               }}
+              
               className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md"
             >
               Connect
@@ -299,10 +300,11 @@ const VideoConferencePage = () => {
 
           {conneciondone && (
               <button
+                disabled={!othersideId}
                 onClick={connectnewcaller}
-                className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md"
+                className="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-md disabled:bg-gray-600"
               >
-                Next
+                {othersideId==null?'Connecting ...':'NEXT'}
               </button>
           )}
           
