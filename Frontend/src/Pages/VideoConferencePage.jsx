@@ -88,9 +88,12 @@ const VideoConferencePage = () => {
     };
 
     // Display remote stream
-    newPeer.ontrack = (event) => {
+    newPeer.ontrack = (event) => {   
+      
       if (remotevideo.current) {
         remotevideo.current.srcObject = event.streams[0];
+      }else{
+        alert("Error fetching remote video")
       }
     };
 
@@ -117,7 +120,6 @@ const VideoConferencePage = () => {
       // Received offer from other user
       if (data.type === "send-offer") {
         setOthersideId(data.otherside);
-        setTimeout(sendQueuedCandidates, 1000);
         const offer = await newPeer.createOffer();
         await newPeer.setLocalDescription(offer);
         socket.send(JSON.stringify({ type: "offer", sdp: offer, otherside: data.otherside }));
@@ -126,7 +128,7 @@ const VideoConferencePage = () => {
       // Received answer from other user
       if (data.type === "send-answer") {
         setOthersideId(data.otherside);
-        setTimeout(sendQueuedCandidates, 1000);
+        setTimeout(sendQueuedCandidates, 10);
         await newPeer.setRemoteDescription(data.sdp);
         const answer = await newPeer.createAnswer();
         await newPeer.setLocalDescription(answer);
@@ -135,7 +137,7 @@ const VideoConferencePage = () => {
 
       // Final answer from other side
       if (data.type === "other-side-answer") {
-        setTimeout(sendQueuedCandidates, 1000);
+        setTimeout(sendQueuedCandidates, 10);
         await newPeer.setRemoteDescription(data.sdp);
       }
 
