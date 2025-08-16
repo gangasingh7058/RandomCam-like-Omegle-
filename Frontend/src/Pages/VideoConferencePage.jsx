@@ -71,7 +71,6 @@ const VideoConferencePage = () => {
 
       if (othersideId != null) {
         // Peer is ready → send immediately
-        console.log("Peer is Ready");
         
         socket.send(JSON.stringify({
           type: "ice-connection",
@@ -79,9 +78,7 @@ const VideoConferencePage = () => {
           otherside: othersideId,
         }));
       } else {
-        // Peer not ready → queue it
-        console.log("Peer Not Ready");
-        
+        // Peer not ready → queue it        
         iceCandidateQueue.push(event.candidate);
       }
     };
