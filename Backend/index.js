@@ -212,6 +212,23 @@ wss.on('connection', (ws) => {
 
     console.log(`User disconnected: ${user.name}`);
   });
+
+  // send live user count
+  setInterval(() => {
+      const user_count_message=JSON.stringify({
+        type: "user-count",
+        count: users.length  
+      });
+
+      users.forEach((user)=>{
+        if(user.socket.readyState === WebSocket.OPEN){
+          user.socket.send(user_count_message);
+        }
+      })
+
+
+    }, 10000);
+
 });
 
 // Match users from queue

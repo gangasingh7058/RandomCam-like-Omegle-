@@ -16,9 +16,14 @@ const VideoConferencePage = () => {
   const [isConnected, setIsConnected] = useState(false);  // Remote connection status
   const [isVideoOn, setIsVideoOn] = useState(true);       // Local video status
 
+  // live-user-count
+  const [liveusercount,setliveusercount]=useState(0);
+
   // --- Refs ---
   const localvideo = useRef();   // Local video element
   const remotevideo = useRef();  // Remote video element
+
+  
 
   // --- Setup WebSocket ---
   useEffect(() => {
@@ -97,7 +102,7 @@ const VideoConferencePage = () => {
 
     // Display remote stream
     newPeer.ontrack = (event) => {   
-      
+      setIsConnected(true);      
       if (remotevideo.current) {
         remotevideo.current.srcObject = event.streams[0];
       }else{
@@ -115,7 +120,7 @@ const VideoConferencePage = () => {
         localvideo.current.srcObject = stream;
       }
       stream.getTracks().forEach((track) => newPeer.addTrack(track, stream));
-      setIsConnected(true);
+      // setIsConnected(true);
     } catch (err) {
       console.error("Error getting local media:", err);
     }
@@ -161,6 +166,11 @@ const VideoConferencePage = () => {
       // Handle next / disconnect events
       if (data.type === "other-did-next" || data.type === "partner-disconnected") {
         resetRemoteVideo(true);
+      }
+
+      if(data.type === "user-count"){
+        // console.log(data.count);
+        setliveusercount(data.count);
       }
     };
 
@@ -225,7 +235,7 @@ const VideoConferencePage = () => {
     setIsConnected(false);
     setOthersideId(null);
     // Navigate to home page
-    navigate('/',{replace:true});
+    window.location.href = '/';
   };
 
   return (
@@ -238,17 +248,14 @@ const VideoConferencePage = () => {
             {isConnected ? "Connected" : "Not Connected"}
           </h2>
           <div className="flex gap-2">
+            <div className="flex items-center font-semibold">
+                Live Count - {liveusercount}
+            </div>
             <button
               onClick={handleEndCall}
               className="flex items-center gap-1 bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-md"
             >
               <Phone className="w-4 h-4" /> End Call
-            </button>
-            <button
-              onClick={connectnewcaller}
-              className="flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-md"
-            >
-              <RotateCcw className="w-4 h-4" /> Next
             </button>
           </div>
         </div>
