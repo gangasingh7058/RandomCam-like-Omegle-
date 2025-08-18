@@ -30,6 +30,7 @@ let users = [];
 let queue = [];
 let GLOBAL_ROOM_ID = 1;
 const room_map = new Map();
+let live_user_count=0;
 
 // User class
 class User {
@@ -119,7 +120,7 @@ const handleNext = async (ws) => {
 // WebSocket connection handler
 wss.on('connection', (ws) => {
   console.log('New WebSocket connection');
-
+  live_user_count+=1;
   ws.on('message', (message) => {
     let data;
     try {
@@ -188,6 +189,8 @@ wss.on('connection', (ws) => {
     const user = ws.user;
     if (!user) return;
 
+    live_user_count-=1;
+
     DeleteUser(user.id);
 
     // Handle other connected user
@@ -217,7 +220,7 @@ wss.on('connection', (ws) => {
   setInterval(() => {
       const user_count_message=JSON.stringify({
         type: "user-count",
-        count: users.length  
+        count: live_user_count  
       });
 
       users.forEach((user)=>{
