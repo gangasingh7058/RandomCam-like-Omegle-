@@ -90,15 +90,24 @@ const VideoConferencePage = () => {
       iceCandidateQueue.length = 0;
     };
 
+    // Remote Video
     newPeer.ontrack = (event) => {
       setIsConnected(true);
       if (remotevideo.current) {
+               
         remotevideo.current.srcObject = event.streams[0];
+
+        setOthersideId(false);
+        setTimeout(() => {
+          setOthersideId(true);
+        }, 5000);
+
       } else {
         alert("Error fetching remote video");
       }
     };
 
+    // Local Video
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
@@ -256,7 +265,7 @@ const VideoConferencePage = () => {
           </div>
 
           {/* Remote Video */}
-          <div className="bg-transparent rounded-xl overflow-hidden relative shadow-md">
+          <div className="bg-black rounded-xl overflow-hidden relative shadow-md">
             <video
               ref={remotevideo}
               id="remoteVideo"
@@ -298,7 +307,7 @@ const VideoConferencePage = () => {
               onClick={connectnewcaller}
               className="bg-yellow-500 hover:bg-yellow-600 text-white px-6 py-3 rounded-xl shadow-md font-medium transition disabled:bg-gray-400 disabled:cursor-not-allowed"
             >
-              {othersideId == null ? "Connecting..." : "Next"}
+              {othersideId == null ? "Connecting..." : othersideId == false ? "Wait For Next":"Next"}
             </button>
           )}
         </div>
